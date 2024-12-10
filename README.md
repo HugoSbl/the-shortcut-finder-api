@@ -64,3 +64,6 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+to add laravel sail direct command 
+alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'php artisan make:migration add_champs_utilisateur_a_users_table --table=users

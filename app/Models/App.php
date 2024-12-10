@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class App extends Model
 {
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name','description','appable_id','appable_type'];
 
     public function shortcuts()
     {
