@@ -34,3 +34,7 @@ Route::controller(TagController::class)->group(function () {
     Route::put('/tags/{tag_id}', [TagController::class, 'update']);
     Route::delete('/tags/{tag_id}', [TagController::class, 'destroy']);
 });
+
+Route::fallback(function(){
+    return response()->json(['message' => 'Ressource introuvable.'], 404);
+});

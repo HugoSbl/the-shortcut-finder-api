@@ -11,11 +11,12 @@ use App\Models\ShortcutInteraction;
 class ShortcutInteractionFactory extends Factory
 {
     protected $model = ShortcutInteraction::class;
+    public $timestamps = false;
 
     public function definition(): array
     {
         $interactions = ['view', 'download', 'like', 'dislike'];
-
+        
         return [
             'shortcut_id' => null,
             'user_id' => null,

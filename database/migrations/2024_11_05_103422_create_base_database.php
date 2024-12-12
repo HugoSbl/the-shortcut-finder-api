@@ -14,8 +14,7 @@ return new class extends Migration {
             $table->string('description')->nullable();
             $table->unsignedInteger('parent_id')->nullable();
             $table->integer('number_of_shortcuts_associated')->nullable();
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
             $table->foreign('parent_id')->references('id')->on('categories_of_shortcut')->onDelete('set null');
         });
 
@@ -26,8 +25,7 @@ return new class extends Migration {
             $table->string('description')->nullable();
             $table->unsignedInteger('appable_id')->nullable();
             $table->string('appable_type')->nullable();
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
         });
 
         // Table shortcuts (Référence users en BIGINT UNSIGNED)
@@ -50,21 +48,19 @@ return new class extends Migration {
 
             $table->boolean('is_archived')->default(false);
             $table->boolean('is_deleted')->default(false);
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
 
             // Clés étrangères
             $table->foreign('app_id')->references('id')->on('apps')->onDelete('set null');
             $table->foreign('category_id')->references('id')->on('categories_of_shortcut')->onDelete('set null');
         });
 
-        Schema::create('shortcut_storage', function (Blueprint $table) {
+        Schema::create('shortcut_storages', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('shortcut_id');
             $table->enum('storage_type', ['icloud', 'file'])->nullable();
             $table->string('storage_url')->nullable();
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
 
             $table->foreign('shortcut_id')->references('id')->on('shortcuts')->onDelete('cascade');
         });
@@ -75,8 +71,7 @@ return new class extends Migration {
             $table->integer('file_size')->nullable();
             $table->string('mime_type')->nullable();
             $table->string('checksum')->nullable();
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
 
             $table->foreign('shortcut_id')->references('id')->on('shortcuts')->onDelete('cascade');
         });
@@ -84,8 +79,7 @@ return new class extends Migration {
         Schema::create('tags', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->nullable();
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
         });
 
         Schema::create('taggables', function (Blueprint $table) {
@@ -93,8 +87,7 @@ return new class extends Migration {
             $table->unsignedInteger('tag_id');
             $table->unsignedInteger('taggable_id');
             $table->string('taggable_type');
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
 
             $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
         });
@@ -105,7 +98,7 @@ return new class extends Migration {
             // users en BIGINT UNSIGNED
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->enum('interaction_type', ['view', 'download', 'like', 'dislike'])->nullable();
-            $table->dateTime('created_at')->nullable();
+            $table->timestamps();
 
             $table->foreign('shortcut_id')->references('id')->on('shortcuts')->onDelete('cascade');
         });
@@ -115,8 +108,7 @@ return new class extends Migration {
             $table->unsignedInteger('shortcut_id');
             $table->integer('version_number')->nullable();
             $table->text('content')->nullable();
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
 
             $table->foreign('shortcut_id')->references('id')->on('shortcuts')->onDelete('cascade');
         });
@@ -126,21 +118,19 @@ return new class extends Migration {
             $table->string('url')->nullable();
             $table->unsignedInteger('imageable_id')->nullable();
             $table->string('imageable_type')->nullable();
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
         });
 
         Schema::create('category_shortcut', function (Blueprint $table) {
             $table->unsignedInteger('category_id');
             $table->unsignedInteger('shortcut_id');
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories_of_shortcut')->onDelete('cascade');
             $table->foreign('shortcut_id')->references('id')->on('shortcuts')->onDelete('cascade');
         });
 
-        Schema::create('propositions', function (Blueprint $table) {
+        Schema::create('proposals', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title')->notNull();
             $table->string('short_description')->notNull();
@@ -153,8 +143,7 @@ return new class extends Migration {
             // users en BIGINT UNSIGNED
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->unsignedInteger('app_id')->nullable();
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories_of_shortcut')->onDelete('set null');
             $table->foreign('app_id')->references('id')->on('apps')->onDelete('set null');
@@ -168,8 +157,7 @@ return new class extends Migration {
             // users en BIGINT UNSIGNED
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->unsignedInteger('parent_id')->nullable();
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
 
             $table->foreign('parent_id')->references('id')->on('comments')->onDelete('set null');
         });
@@ -182,8 +170,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('reason')->nullable();
             $table->boolean('is_resolved')->default(false);
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -191,7 +178,7 @@ return new class extends Migration {
     {
         Schema::dropIfExists('reports');
         Schema::dropIfExists('comments');
-        Schema::dropIfExists('propositions');
+        Schema::dropIfExists('proposals');
         Schema::dropIfExists('category_shortcut');
         Schema::dropIfExists('images');
         Schema::dropIfExists('versions');
@@ -199,7 +186,7 @@ return new class extends Migration {
         Schema::dropIfExists('taggables');
         Schema::dropIfExists('tags');
         Schema::dropIfExists('file_metadata');
-        Schema::dropIfExists('shortcut_storage');
+        Schema::dropIfExists('shortcut_storages');
         Schema::dropIfExists('shortcuts');
         Schema::dropIfExists('apps');
         Schema::dropIfExists('categories_of_shortcut');

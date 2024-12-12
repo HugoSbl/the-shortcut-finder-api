@@ -7,7 +7,7 @@ use App\Models\FileMetadata;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AppModelsFileMetadata>
  */
-class FileMetadaFactory extends Factory
+class FileMetadataFactory extends Factory
 {
     protected $model = FileMetadata::class;
 

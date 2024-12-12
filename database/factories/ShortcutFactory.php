@@ -13,7 +13,7 @@ class ShortcutFactory extends Factory
         return [
             'title' => $this->faker->sentence(),
             'short_description' => $this->faker->text(50),
-            'complete_description' => $this->faker->paragraph(2),
+            'complete_description' => $this->faker->paragraph(50),
             'number_of_downloads' => $this->faker->numberBetween(0, 1000),
             'number_of_views' => $this->faker->numberBetween(0, 1000),
             'likes' => $this->faker->numberBetween(0, 100),

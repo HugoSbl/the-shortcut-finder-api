@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Proposition extends Model
+class Proposal extends Model
 {
-    use HasFactory;
 
     protected $fillable = [
         'title','short_description','is_approved','is_rejected','is_resolved','likes','dislikes',
