@@ -3,17 +3,33 @@
 use App\Http\Controllers\ShortcutController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+})->middleware('auth:api');
+
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle']);
+    Route::get('/auth/google/callback', [AuthController::class, 'registerGoogle']);
+    Route::get('/auth/facebook/callback', [AuthController::class, 'registerFacebook']);
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::post('/me', [AuthController::class, 'me']);
+});
 
 Route::controller(ShortcutController::class)->group(function () {
     Route::get('/shortcuts', [ShortcutController::class, 'index']);
     Route::get('/shortcuts/{category}', [ShortcutController::class, 'indexByCategory']);
-    Route::get('/shortcuts/{shortcut_id}', [ShortcutController::class, 'show']);
+    Route::get('/shortcut/{shortcut_id}', [ShortcutController::class, 'show']);
+    Route::get('/shortcuts/{tags_ids}', [ShortcutController::class, 'indexByTags']);
+    Route::get('/shortcuts/{user_id}', [ShortcutController::class, 'indexByUser']);
+    Route::get('/shortcuts/{app_id}', [ShortcutController::class, 'indexByApp']);
+    Route::get('/shortcuts/download/{shortcut_id}', [ShortcutController::class, 'download']);
     Route::post('/shortcuts', [ShortcutController::class, 'store']);
     Route::put('/shortcuts/{shortcut_id}', [ShortcutController::class, 'update']);
     Route::delete('/shortcuts/{shortcut_id}', [ShortcutController::class, 'destroy']);

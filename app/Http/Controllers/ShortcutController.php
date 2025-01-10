@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Shortcut;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\ShortcutStorage;
 
 class ShortcutController extends Controller
 {
@@ -29,9 +30,35 @@ class ShortcutController extends Controller
         return response()->json($shortcuts);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function indexByUser($user_id)
+    {
+        $shortcuts = Shortcut::where('user_id', $user_id)->get();
+        return response()->json($shortcuts);
+    }
+
+    public function indexByApp($app_id)
+    {
+        $shortcuts = Shortcut::where('app_id', $app_id)->get();
+        return response()->json($shortcuts);
+    }
+
+    public function download($shortcut_id)
+    {
+        $shortcut = Shortcut::findOrFail($shortcut_id);
+        $shortcut->number_of_downloads += 1;
+        $shortcut_storage = ShortcutStorage::where('shortcut_id', $shortcut_id)->first();
+        $shortcut->save();
+        if($shortcut_storage->storage_type == 'icloud') {
+            return response()->json(['icloud' => $shortcut_storage->storage_url]);
+        } else if ($shortcut_storage->storage_type == 'file') {
+            return response()->json(['link' => $shortcut_storage->storage_url]);
+        } else
+        {   
+            return response()->json(['error' => 'No download link available.']);
+        }
+        
+    }
+
     public function store(Request $request)
     {
        $request->validate([
@@ -40,9 +67,9 @@ class ShortcutController extends Controller
             'complete_description' => 'required',
             'category_id' => 'required',
         ]);
-        $shortcut = Shortcut::create($request);
+        $shortcut = Shortcut::create($request->all());
         if($request->has('tags')) {
-            
+
             $shortcut->tags()->attach($request->tags);
         }
         if($request->has('app_id')) {
@@ -53,8 +80,8 @@ class ShortcutController extends Controller
             $shortcut->user()->associate($request->user_id);
         }
 
-        $currentUser = auth()->user();
-        $shortcut->user()->associate($currentUser);
+        //$currentUser = auth()->user();
+        //$shortcut->user()->associate($currentUser);
         return response()->json($shortcut);
     }
 

@@ -51,6 +51,11 @@ class Shortcut extends Model
         return $this->hasMany(FileMetadata::class);
     }
 
+    public function ShortcutStorage()
+    {
+        return $this->hasMany(ShortcutStorage::class);
+    }
+
     // Relation avec tags (via taggables) - polymorphisme non nécessaire car table pivot ?
     // Ici, on utilise une table pivot "category_shortcut" mais pour tags on a taggables :
     // Dans la base initiale, on a "taggables" polymorphique. Si on veut lier shortcut et tags via taggables, on utilise morphToMany :
