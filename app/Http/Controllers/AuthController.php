@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Sanctum\Sanctum;
 
 class AuthController extends Controller
 {
@@ -34,7 +35,6 @@ class AuthController extends Controller
                     'type' => 'bearer',
                 ]
             ]);
-
     }
 
     public function redirectToGoogle() {
@@ -49,6 +49,7 @@ class AuthController extends Controller
         $user = User::firstOrCreate(
             ['email' => $googleUser->email],
             ['name' => $googleUser->name, 
+            'auth_provider' => 'google',
             'pseudo' => $pseudo,
             'password' => Hash::make('password')]
         );
@@ -56,18 +57,19 @@ class AuthController extends Controller
 
     public function register(Request $request){
         $request->validate([
-            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'pseudo' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
+        $user = User::firstOrCreate([
+            'pseudo' => $request->pseudo,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        $token = Auth::login($user);
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',
@@ -76,7 +78,7 @@ class AuthController extends Controller
                 'token' => $token,
                 'type' => 'bearer',
             ]
-        ]);
+        ], 201);
     }
 
     public function logout()
